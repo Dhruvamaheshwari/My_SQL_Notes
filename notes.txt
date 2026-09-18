@@ -1,0 +1,36 @@
+// to create a new database
+create database my_database;
+
+// to use the newly created database
+use my_database
+
+// to create the table in the new database
+create table users(
+    id int primary auto_increment not null,
+    name varchar(100) not null,
+    email varchar(100) unique not null,
+    gender enum('male' , 'female' , 'other'),
+    date_of_barth date,
+    create_at timestamp default current_timestamp
+)
+
+// to show the table
+select * from users
+
+// to drop the table
+drop database my_database
+
+
+// Rename table name
+rename table users to pro
+
+// add some more field in table
+alert table users add column isactive default true
+
+// drop the column form the table
+alert table users drop column isactive
+
+// modify any field present in the table
+alert table users modify column name varchar(150)
+
+// I want to show the email first then name
