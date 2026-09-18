@@ -64,3 +64,6 @@ select * from users where gender="male" or salary>70000;
 // asc and desc order
 select * from users order by date_of_birth asc; // this is accending order
 select * from users order by date_of_birth desc; // this is desinding odrder 
+
+// i want only top 5 rows;
+select * from users limit 15;
