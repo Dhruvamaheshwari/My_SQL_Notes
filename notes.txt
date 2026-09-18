@@ -67,3 +67,17 @@ select * from users order by date_of_birth desc; // this is desinding odrder
 
 // i want only top 5 rows;
 select * from users limit 15;
+
+
+// Update the table data
+-- update users 
+-- set salary=1000000 
+-- where id=1;
+
+-- UPDATE users
+-- SET name = 'honey sing'
+-- WHERE email = 'honey@gmail.com';
+
+update users
+set salary = salary + 10000
+where salary<=60000;
