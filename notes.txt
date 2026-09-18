@@ -34,3 +34,33 @@ alert table users drop column isactive
 alert table users modify column name varchar(150)
 
 // I want to show the email first then name
+alert table users modify column email varchar(100) after id;
+
+// __________________CRUD_________________________
+//1. insert the vaulus (Create)
+// insert into users value
+(1 , "Dhruva Maheshwari" , "male" , "dhruva@gmail.com" , "2001-01-01" , default);
+
+// insert into users(id , name ,gender , email , dob ) value  // isme hm n fejle 
+(1 , "Dhruva Maheshwari" , "male" , "dhruva@gmail.com" , "2001-01-01" , default);
+
+// insert many data at a time and explicity say this field contain this data
+insert into users (id , name , email , gender , date_of_birth) values 
+(2 , "honey paajii" , "honey@gmail.com" , "male" , "1990-01-01"),
+(3 , "Iron man" , "iron@gamil.com" , "male" , "2000-01-01"),
+(4 , "Spider man" , "sider@gmail.com" , "female" , "2006-01-01");
+
+
+// Read the data
+select * from users where gender="female"; 
+select * from users where date_of_birth<'1995-09-09';
+select * from users where date_of_birth is null;
+select * from users where date_of_birth is not null;
+select * from users where date_of_birth<"1990-08-08" and gender="female";
+select * from users where gender in ("male" , "female");
+select * from users where salary between 60000 and 70000;
+select * from users where gender="male" or salary>70000;
+
+// asc and desc order
+select * from users order by date_of_birth asc; // this is accending order
+select * from users order by date_of_birth desc; // this is desinding odrder 
