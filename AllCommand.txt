@@ -376,20 +376,36 @@ INNER JOIN users AS referrer
 -- It does not store separate data.
 
 -- Create a view for users with a salary greater than 70,000
-CREATE VIEW rich_users AS
-SELECT *
-FROM users
-WHERE salary > 70000;
+    CREATE VIEW rich_users AS
+    SELECT *
+    FROM users
+    WHERE salary > 70000;
 
 -- Use the view
-SELECT * FROM rich_users;
+    SELECT * FROM rich_users;
 
 -- Remove the view
-DROP VIEW rich_users;
+    DROP VIEW rich_users;
 
 
 -- ============================================================
--- 17. DANGEROUS COMMANDS
+-- 17. INDEXES
+-- ============================================================
+
+-- Display all indexes on the users table
+    SHOW INDEXES FROM users;
+
+-- Create an index on the gender column
+    CREATE INDEX gender_index
+    ON users (gender);
+
+-- Remove the index
+    DROP INDEX gender_index
+    ON users;
+
+
+-- ============================================================
+-- 18. DANGEROUS COMMANDS
 -- ============================================================
 
 -- Delete a table permanently
