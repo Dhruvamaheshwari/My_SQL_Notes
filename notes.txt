@@ -81,3 +81,10 @@ select * from users limit 15;
 update users
 set salary = salary + 10000
 where salary<=60000;
+
+
+// how to add constrain in any field
+alter table users add constraint unique_email unique(email);
+
+custome constrain in any field
+alter table users add constrain check_dob CHECK (data_of_birth > '1980-01-01);

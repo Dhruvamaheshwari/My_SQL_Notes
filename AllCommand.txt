@@ -1,0 +1,382 @@
+Create a new file named `e:\SQL Script\sql_notes.txt` and add:
+
+````sql
+-- ============================================================
+-- MYSQL SQL NOTES
+-- ============================================================
+
+-- ============================================================
+-- 1. DATABASE AND TABLE CREATION
+-- ============================================================
+
+CREATE DATABASE IF NOT EXISTS accenture;
+
+USE accenture;
+
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    gender ENUM('male', 'female', 'other'),
+    date_of_birth DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Display all records
+SELECT * FROM users;
+
+
+-- ============================================================
+-- 2. ALTER TABLE
+-- ============================================================
+
+-- Rename a table
+RENAME TABLE users TO programmers;
+RENAME TABLE programmers TO users;
+
+-- Add a column
+ALTER TABLE users
+ADD COLUMN is_active BOOLEAN DEFAULT TRUE;
+
+-- Remove a column
+ALTER TABLE users
+DROP COLUMN is_active;
+
+-- Modify a column
+ALTER TABLE users
+MODIFY COLUMN name VARCHAR(150);
+
+-- Change the order of a column
+ALTER TABLE users
+MODIFY COLUMN email VARCHAR(100) AFTER name;
+
+-- Add a salary column
+ALTER TABLE users
+ADD COLUMN salary DECIMAL(10, 2) NOT NULL DEFAULT 0;
+
+-- Add a unique constraint
+ALTER TABLE users
+ADD CONSTRAINT unique_email UNIQUE (email);
+
+-- Add a check constraint
+ALTER TABLE users
+ADD CONSTRAINT check_date_of_birth
+CHECK (date_of_birth > '1980-01-01');
+
+
+-- ============================================================
+-- 3. INSERT DATA
+-- ============================================================
+
+-- Insert one record
+INSERT INTO users
+    (name, email, gender, date_of_birth)
+VALUES
+    ('Dhruva Maheshwari', 'dhruva@gmail.com', 'male', '2001-01-01');
+
+-- Insert multiple records
+INSERT INTO users
+    (name, email, gender, date_of_birth, salary)
+VALUES
+    ('Honey Paajii', 'honey@gmail.com', 'male', '1990-01-01', 60000),
+    ('Iron Man', 'iron@gmail.com', 'male', '2000-01-01', 70000),
+    ('Spider Man', 'spider@gmail.com', 'female', '2006-01-01', 50000);
+
+
+-- ============================================================
+-- 4. SELECT AND WHERE
+-- ============================================================
+
+SELECT * FROM users;
+
+-- Filter by gender
+SELECT * FROM users
+WHERE gender = 'female';
+
+-- Compare dates
+SELECT * FROM users
+WHERE date_of_birth < '1995-09-09';
+
+-- Check NULL values
+SELECT * FROM users
+WHERE date_of_birth IS NULL;
+
+SELECT * FROM users
+WHERE date_of_birth IS NOT NULL;
+
+-- AND condition
+SELECT * FROM users
+WHERE date_of_birth < '1990-08-08'
+  AND gender = 'female';
+
+-- IN operator
+SELECT * FROM users
+WHERE gender IN ('male', 'female');
+
+-- BETWEEN operator
+SELECT * FROM users
+WHERE salary BETWEEN 60000 AND 70000;
+
+-- OR condition
+SELECT * FROM users
+WHERE gender = 'male'
+   OR salary > 70000;
+
+
+-- ============================================================
+-- 5. ORDER BY AND LIMIT
+-- ============================================================
+
+-- Ascending order
+SELECT * FROM users
+ORDER BY date_of_birth ASC;
+
+-- Descending order
+SELECT * FROM users
+ORDER BY date_of_birth DESC;
+
+-- Display the first 5 records
+SELECT * FROM users
+LIMIT 5;
+
+
+-- ============================================================
+-- 6. UPDATE DATA
+-- ============================================================
+
+UPDATE users
+SET salary = 100000
+WHERE id = 1;
+
+UPDATE users
+SET name = 'Honey Singh'
+WHERE email = 'honey@gmail.com';
+
+-- Increase salary by 10,000
+UPDATE users
+SET salary = salary + 10000
+WHERE salary <= 60000;
+
+
+-- ============================================================
+-- 7. DELETE DATA
+-- ============================================================
+
+-- Delete one record
+DELETE FROM users
+WHERE id = 2;
+
+-- Always use WHERE carefully.
+-- DELETE FROM users;  -- Deletes every record
+
+
+-- ============================================================
+-- 8. AGGREGATE FUNCTIONS
+-- ============================================================
+
+-- Count all records
+SELECT COUNT(*) AS total_users
+FROM users;
+
+-- Count male users
+SELECT COUNT(*) AS male_count
+FROM users
+WHERE gender = 'male';
+
+-- Minimum and maximum salary
+SELECT
+    MIN(salary) AS minimum_salary,
+    MAX(salary) AS maximum_salary
+FROM users;
+
+-- Total salary
+SELECT SUM(salary) AS total_salary
+FROM users;
+
+-- Average salary
+SELECT AVG(salary) AS average_salary
+FROM users;
+
+
+-- ============================================================
+-- 9. GROUP BY
+-- ============================================================
+
+SELECT
+    gender,
+    SUM(salary) AS total_salary
+FROM users
+GROUP BY gender;
+
+SELECT
+    gender,
+    AVG(salary) AS average_salary
+FROM users
+GROUP BY gender;
+
+
+-- ============================================================
+-- 10. STRING FUNCTIONS
+-- ============================================================
+
+-- Length of a name
+SELECT
+    name,
+    LENGTH(name) AS name_length
+FROM users;
+
+-- Convert text to lowercase and uppercase
+SELECT
+    LOWER(name) AS lowercase_name,
+    UPPER(gender) AS uppercase_gender
+FROM users;
+
+-- Combine text
+SELECT
+    id,
+    name,
+    CONCAT(LOWER(name), '.123') AS username
+FROM users;
+
+-- IF condition
+SELECT
+    name,
+    gender,
+    IF(gender = 'female', 'Yes', 'No') AS is_female
+FROM users;
+
+
+-- ============================================================
+-- 11. TRANSACTIONS
+-- ============================================================
+
+-- Disable automatic commit
+SET AUTOCOMMIT = 0;
+
+DELETE FROM users
+WHERE id = 2;
+
+-- Undo changes since the last COMMIT
+ROLLBACK;
+
+DELETE FROM users
+WHERE id = 5;
+
+-- Permanently save changes
+COMMIT;
+
+-- Enable automatic commit again
+SET AUTOCOMMIT = 1;
+
+
+-- ============================================================
+-- 12. ADDRESS TABLE AND FOREIGN KEY
+-- ============================================================
+
+CREATE TABLE addresses (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    street VARCHAR(40) NOT NULL,
+    pincode VARCHAR(10) NOT NULL,
+    city VARCHAR(50),
+    state VARCHAR(40),
+
+    CONSTRAINT fk_user_address
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE CASCADE
+);
+
+-- Insert address data
+INSERT INTO addresses
+    (user_id, street, pincode, city, state)
+VALUES
+    (1, 'MG Road', '144001', 'Ludhiana', 'Punjab'),
+    (2, 'Model Town', '144002', 'Jalandhar', 'Punjab'),
+    (3, 'Sector 17', '160017', 'Chandigarh', 'Chandigarh');
+
+-- ON DELETE CASCADE means:
+-- Deleting a user also deletes that user's address.
+
+
+-- ============================================================
+-- 13. JOINS
+-- ============================================================
+
+-- INNER JOIN:
+-- Returns only matching records from both tables.
+SELECT
+    users.name,
+    addresses.city
+FROM users
+INNER JOIN addresses
+    ON users.id = addresses.user_id;
+
+-- LEFT JOIN:
+-- Returns all users, including users without an address.
+SELECT
+    users.name,
+    users.gender,
+    addresses.city,
+    addresses.state
+FROM users
+LEFT JOIN addresses
+    ON users.id = addresses.user_id;
+
+
+-- ============================================================
+-- 14. UNION
+-- ============================================================
+
+-- UNION combines the results of two SELECT queries.
+-- Both queries must return the same number of columns
+-- with compatible data types.
+
+SELECT name, gender, email
+FROM users
+
+UNION
+
+SELECT state, city, pincode
+FROM addresses;
+
+
+-- ============================================================
+-- 15. SELF JOIN
+-- ============================================================
+
+-- Add a column to store the referring user's ID
+ALTER TABLE users
+ADD COLUMN referred_by_id INT;
+
+-- Add sample referral relationships
+UPDATE users
+SET referred_by_id = 1
+WHERE id IN (2, 3, 4);
+
+UPDATE users
+SET referred_by_id = 2
+WHERE id IN (5, 6);
+
+-- Join the users table with itself
+SELECT
+    referred_user.id,
+    referred_user.name AS user_name,
+    referrer.name AS referred_by_name
+FROM users AS referred_user
+INNER JOIN users AS referrer
+    ON referred_user.referred_by_id = referrer.id;
+
+
+-- ============================================================
+-- 16. DANGEROUS COMMANDS
+-- ============================================================
+
+-- Delete a table permanently
+-- DROP TABLE users;
+
+-- Delete a database permanently
+-- DROP DATABASE accenture;
+
+-- Always verify the database or table before using DROP.
+````
